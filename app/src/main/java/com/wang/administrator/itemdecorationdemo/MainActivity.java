@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(MainActivity.this, "abc1", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "abc2", Toast.LENGTH_SHORT).show();
         String[] stringArray = getResources().getStringArray(R.array.provinces);
         List<CityBean> mDatas = new ArrayList<CityBean>();
         for (int i=0;i<stringArray.length;i++){

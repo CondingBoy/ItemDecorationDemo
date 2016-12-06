@@ -9,8 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.wang.administrator.itemdecorationdemo.R;
 import com.wang.administrator.itemdecorationdemo.entity.CityBean;
 
 import java.util.List;
@@ -29,7 +32,10 @@ public class MyDecoration extends RecyclerView.ItemDecoration {
     private static int  COLOR_TITLE_BG = Color.parseColor("#FFDFDFDF");
     private static int  COLOR_TITLE_FONT = Color.parseColor("#FF000000");
     private int mFontSize;
+    private final LayoutInflater inflater;
+
     public MyDecoration(Context context, List<CityBean> datas){
+        inflater = LayoutInflater.from(context);
         mRect = new Rect();
         mDatas = datas;
         mTitleHeight= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,30,context.getResources().getDisplayMetrics());
@@ -68,6 +74,15 @@ public class MyDecoration extends RecyclerView.ItemDecoration {
 
     }
 
+    /**
+     * 绘制item的分割线
+     * @param c
+     * @param params
+     * @param child
+     * @param left
+     * @param right
+     * @param position
+     */
     private void drawDeviderArea(Canvas c, RecyclerView.LayoutParams params, View child, int left, int right, int position) {
         mPaint.setColor(COLOR_TITLE_BG);
         c.drawRect(left,child.getTop()-params.topMargin,right,child.getTop()-params.topMargin+mDevicerHeight,mPaint);
@@ -109,11 +124,36 @@ public class MyDecoration extends RecyclerView.ItemDecoration {
                 }
             }
         }
-        mPaint.setColor(COLOR_TITLE_BG);
-        c.drawRect(parent.getPaddingLeft(),parent.getPaddingTop(),parent.getRight()-parent.getPaddingRight(),parent.getPaddingTop()+mTitleHeight,mPaint);
-        mPaint.setColor(COLOR_TITLE_FONT);
-        mPaint.getTextBounds(tag,0,tag.length(),mRect);
-        c.drawText(tag,child.getPaddingLeft(),parent.getPaddingTop()+mTitleHeight-(mTitleHeight/2-mRect.height()/2),mPaint);
+        int tagMesureWidth = 0;
+        int tagMesureHeight = 0;
+        View view = inflater.inflate(R.layout.tag_layout, parent, false);
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        if(layoutParams==null){
+            layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,mTitleHeight);
+            view.setLayoutParams(layoutParams);
+        }
+        if(layoutParams.width==ViewGroup.LayoutParams.MATCH_PARENT){//若layoutparam的width是matchparent，给出当前父控件能给出的最大宽度
+            tagMesureWidth = View.MeasureSpec.makeMeasureSpec(parent.getWidth()-parent.getPaddingLeft()-parent.getPaddingRight(),View.MeasureSpec.EXACTLY);
+        }else if(layoutParams.width==ViewGroup.LayoutParams.WRAP_CONTENT){
+            tagMesureWidth = View.MeasureSpec.makeMeasureSpec(parent.getWidth()-parent.getPaddingLeft()-parent.getPaddingRight(),View.MeasureSpec.AT_MOST);
+        }else{//给的是精确值
+            tagMesureWidth = View.MeasureSpec.makeMeasureSpec(layoutParams.width,View.MeasureSpec.EXACTLY);
+        }
+        if(layoutParams.height==ViewGroup.LayoutParams.MATCH_PARENT){//若layoutparam的width是matchparent，给出当前父控件能给出的最大宽度
+            tagMesureHeight = View.MeasureSpec.makeMeasureSpec(mTitleHeight,View.MeasureSpec.EXACTLY);
+        }else if(layoutParams.height==ViewGroup.LayoutParams.WRAP_CONTENT){
+            tagMesureHeight = View.MeasureSpec.makeMeasureSpec(mTitleHeight,View.MeasureSpec.EXACTLY);
+        }else{//给的是精确值
+            tagMesureHeight = View.MeasureSpec.makeMeasureSpec(layoutParams.height,View.MeasureSpec.EXACTLY);
+        }
+        view.measure(tagMesureWidth,tagMesureHeight);
+        view.layout(parent.getPaddingLeft(),parent.getPaddingTop(),parent.getPaddingLeft()+parent.getWidth(),parent.getPaddingTop()+view.getMeasuredHeight());
+        view.draw(c);
+//        mPaint.setColor(COLOR_TITLE_BG);
+//        c.drawRect(parent.getPaddingLeft(),parent.getPaddingTop(),parent.getRight()-parent.getPaddingRight(),parent.getPaddingTop()+mTitleHeight,mPaint);
+//        mPaint.setColor(COLOR_TITLE_FONT);
+//        mPaint.getTextBounds(tag,0,tag.length(),mRect);
+//        c.drawText(tag,child.getPaddingLeft(),parent.getPaddingTop()+mTitleHeight-(mTitleHeight/2-mRect.height()/2),mPaint);
 
 //        if(flag)
 //            c.restore();
