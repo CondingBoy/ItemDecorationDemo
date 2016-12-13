@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.wang.administrator.itemdecorationdemo.decoration.MyDecoration;
@@ -20,8 +21,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(MainActivity.this, "abc2", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "abc", Toast.LENGTH_SHORT).show();
         String[] stringArray = getResources().getStringArray(R.array.provinces);
+        IndexView indexView = (IndexView) findViewById(R.id.indexBar);
+        indexView.setOnIndexBarPressListener(new IndexView.onIndexBarPressListener() {
+            @Override
+            public void onIndexPress(int position, String tag) {
+                Log.e("TAG","Position:"+position+";Tag:"+tag);
+            }
+
+            @Override
+            public void onIndexUp() {
+
+            }
+        });
         List<CityBean> mDatas = new ArrayList<CityBean>();
         for (int i=0;i<stringArray.length;i++){
             CityBean cityBean = new CityBean(stringArray[i]);

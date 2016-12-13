@@ -116,7 +116,7 @@ public class MyDecoration extends RecyclerView.ItemDecoration {
         boolean flag = false;
         if(pos+1<mDatas.size()){//防止数组越界
             if(tag!=null&&!tag.equals(mDatas.get(pos+1).getTag())){//当前可见的第一个item与下一个的tag不同，表示悬浮的view需要切换了
-                Log.e("TAG", "onDrawOver: getTop"+child.getTop());//当getTop开始为负数，它的绝对值为item移除屏幕的距离
+//                Log.e("TAG", "onDrawOver: getTop"+child.getTop());//当getTop开始为负数，它的绝对值为item移除屏幕的距离
                 if(child.getHeight()+child.getTop()<mTitleHeight){//当第一个可见的item在屏幕中剩余的可见高度小于mTitleHeight时，需要做悬浮框的切换“动画”
                     c.save();//在对画布做操作前需要保存当前状态
                     flag=true;
@@ -147,7 +147,9 @@ public class MyDecoration extends RecyclerView.ItemDecoration {
             tagMesureHeight = View.MeasureSpec.makeMeasureSpec(layoutParams.height,View.MeasureSpec.EXACTLY);
         }
         view.measure(tagMesureWidth,tagMesureHeight);
-        view.layout(parent.getPaddingLeft(),parent.getPaddingTop(),parent.getPaddingLeft()+parent.getWidth(),parent.getPaddingTop()+view.getMeasuredHeight());
+        view.layout(parent.getPaddingLeft(),parent.getPaddingTop()+20,parent.getPaddingLeft()+parent.getWidth(),parent.getPaddingTop()+view.getMeasuredHeight()+20);
+//        view.setTranslationY(20);
+        Log.e("TOP:",view.getTop()+"");
         view.draw(c);
 //        mPaint.setColor(COLOR_TITLE_BG);
 //        c.drawRect(parent.getPaddingLeft(),parent.getPaddingTop(),parent.getRight()-parent.getPaddingRight(),parent.getPaddingTop()+mTitleHeight,mPaint);
